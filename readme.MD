@@ -193,13 +193,16 @@ console.log(save.getAllSaves());
 ```
 
 ### Removing a save
-You can remove a save by saving it or importing it and then use the `removeSave` function.
+You can remove a save by saving it or importing it and then use the `removeSave` function. It will return a Promise which will be fullfilled once the save has been deleted.
 ```js
 const {ValueSaver} = require('valuesaver');
 const save = new ValueSaver();
 save.set(`Some key`, `Some value`);
 
-save.import(123).removeSave();
+save.import(123);
+(async () => {
+    await save.removeSave();
+})();
 ```
 
 ### Removing all saves
