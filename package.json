@@ -1,13 +1,13 @@
 {
   "name": "valuesaver",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Save values in a storage and import them later back",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Extive Developers",
-  "license": "ISC",
+  "author": "Luuk",
+  "license": "MIT",
   "dependencies": {
     "path": "^0.12.7"
   },
@@ -29,9 +29,9 @@
     "framework"
   ],
   "displayName": "Value Saver",
-  "publisher": "Luuk | Extive Marketing Manager",
-  "homepage": "https://github.com/Extive-eu/ValueSaver#readme",
+  "publisher": "Luuk",
+  "homepage": "https://github.com/Luuk-Dev/ValueSaver#readme",
   "repository": {
-    "url": "https://github.com/Extive-eu/ValueSaver"
+    "url": "https://github.com/Luuk-Dev/ValueSaver"
   }
 }
