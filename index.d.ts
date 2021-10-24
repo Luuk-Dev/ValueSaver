@@ -143,7 +143,7 @@ export class ValueSaver{
      * @example
      * save.removesave();
      */
-    removeSave() : ValueSaver;
+    removeSave() : Promise<ValueSaver>;
 
     /**
      * Removes all the saves of the ValueSavers.
