@@ -26,7 +26,7 @@
             "1.5.0": "The official release of ValueSaver"
         },
         "LATEST_VERSION": "1.6.0",
-        "LICENSE": "ISC",
+        "LICENSE": "MIT",
         "NON_FUNCTIONATING_SAVE": "non-functionating-save.json"
     }
 }
