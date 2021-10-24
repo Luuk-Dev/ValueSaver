@@ -155,23 +155,28 @@ class ValueSaver {
         }
     }
     removeSave(){
-        if(!this._id) throw new TypeError(`\x1b[31m${ERRORS.INVALID_SAVE_ID}`);
-        const filter = ids.filter(r => r.id === this._id);
-        if(filter.length === 0) return false;
-        fs.unlink(path.join(__dirname, filter[0].src), (err_unlink) => {
-            if(err_unlink){
-                console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_UNLINK.split("[SAVE_ID]").join(file.split(".json").join("")));
-                return this;
-            }
-            const index = ids.indexOf(filter[0]);
-            ids.splice(index, 1);
-            fs.writeFile(path.join(__dirname, `./src/ids.json`), JSON.stringify(ids), (err_write) => {
-                if(err_write){
-                    console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_UPDATE_IDS);
-                    return this;
+        const id = this._id;
+        const valuesaver = this;
+        return new Promise((resolve, reject) => {
+            if(!id) throw new TypeError(`\x1b[31m${ERRORS.INVALID_SAVE_ID}`);
+            const filter = ids.filter(r => r.id === id);
+            if(filter.length === 0) return false;
+            fs.unlink(path.join(__dirname, filter[0].src), (err_unlink) => {
+                if(err_unlink){
+                    console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_UNLINK.split("[SAVE_ID]").join(file.split(".json").join("")));
+                    resolve(valuesaver);
                 }
+                const index = ids.indexOf(filter[0]);
+                ids.splice(index, 1);
+                fs.writeFile(path.join(__dirname, `./src/ids.json`), JSON.stringify(ids), (err_write) => {
+                    if(err_write){
+                        console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_UPDATE_IDS);
+                        resolve(valuesaver);
+                        fs.writeFile(path.join(__dirname, `./src/saves/${id}`), JSON.stringify([]));
+                    }
+                });
+                resolve(valuesaver);
             });
-            return this;
         });
     }
     removeAllSaves(){
