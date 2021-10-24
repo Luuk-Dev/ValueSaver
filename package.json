@@ -1,0 +1,37 @@
+{
+  "name": "valuesaver",
+  "version": "1.6.0",
+  "description": "Save values in a storage and import them later back",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Extive Developers",
+  "license": "ISC",
+  "dependencies": {
+    "path": "^0.12.7"
+  },
+  "readme": "readme.MD",
+  "categories": ["Keymaps"],
+  "keywords": [
+    "key",
+    "value",
+    "map",
+    "values",
+    "save",
+    "saver",
+    "saves",
+    "valuesaver",
+    "import",
+    "json",
+    "array",
+    "export",
+    "framework"
+  ],
+  "displayName": "Value Saver",
+  "publisher": "Luuk | Extive Marketing Manager",
+  "homepage": "https://github.com/Extive-eu/ValueSaver#readme",
+  "repository": {
+    "url": "https://github.com/Extive-eu/ValueSaver"
+  }
+}
