@@ -1,0 +1,32 @@
+{
+    "ERRORS": {
+        "INVALID_ARRAY": "[INVALID_ARRAY]: The specified array is an invalid array. The array must include a json object with a key and a value.",
+        "INVALID_ARRAY_TYPE": "[INVALID_ARRAY_TYPE]: The specified parameter is not an array.",
+        "INVALID_KEY": "[INVALID_KEY]: No valid key has been specified! A key must be a string or a number.",
+        "INVALID_FILTER": "[INVALID_FILTER]: No valid filter has been specified! A filter must be a function.",
+        "INVALID_CALLBACK": "[INVALID_CALLBACK]: No valid callback has been specified! A callback must be a function.",
+        "INVALID_OBJECT": "[INVALID_OBJECT]: The specified object is an invalid object. The object must include a key and a value.",
+        "INVALID_OBJECT_TYPE": "[INVALID_OBJECT_TYPE]: The specified parameter is not an object.",
+        "INVALID_ID": "[INVALID_ID]: The specified id is an invalid id. The id must be a string or a number.",
+        "INVALID_SAVE_ID": "[INVALID_SAVE_ID]: There was no save saved or imported which can be removed for this ValueSaver."
+    },
+    "WARNINGS": {
+        "ERROR_UNLINK": "[ERROR_UNLINK]: There was an error while removing the save with the id '[SAVE_ID]'",
+        "ERROR_READ_FOLDER": "[ERROR_READ_FOLDER]: There was an error while trying to read the folder with the saves.",
+        "ERROR_WRITE_SAVE": "[ERROR_WRITE_SAVE]: There was an error while trying to write a save with the id '[SAVE_ID]'",
+        "ERROR_UPDATE_IDS": "[ERROR_UPDATE_IDS]: There was an error while trying to update the id's file."
+    },
+    "INFO": {
+        "AUTHOR": "Luuk",
+        "URL": "https://github.com/Luuk-Dev",
+        "PUBLISHER": "Luuk",
+        "ORGANISATION": "Extive",
+        "VERSIONS": {
+            "1.6.0": "Bugs fixed and colored warnings and errors",
+            "1.5.0": "The official release of ValueSaver"
+        },
+        "LATEST_VERSION": "1.6.0",
+        "LICENSE": "ISC",
+        "NON_FUNCTIONATING_SAVE": "non-functionating-save.json"
+    }
+}
