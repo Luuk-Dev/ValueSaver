@@ -25,7 +25,7 @@
             "1.6.0": "Bugs fixed and colored warnings and errors",
             "1.5.0": "The official release of ValueSaver"
         },
-        "LATEST_VERSION": "1.6.0",
+        "LATEST_VERSION": "1.6.1",
         "LICENSE": "MIT",
         "NON_FUNCTIONATING_SAVE": "non-functionating-save.json"
     }
