@@ -1,7 +1,6 @@
-[![discordBadge](https://img.shields.io/badge/Chat-Click%20here-7289d9?style=for-the-badge&logo=discord)](https://www.extive.eu/discord)
 [![downloadsBadge](https://img.shields.io/npm/dt/valuesaver?style=for-the-badge)](https://npmjs.com/package/valuesaver)
 [![versionBadge](https://img.shields.io/npm/v/valuesaver?style=for-the-badge)](https://npmjs.com/package/valuesaver)
-[![documentationBadge](https://img.shields.io/badge/Documentation-Click%20here-blue?style=for-the-badge)](https://github.com/Extive-eu/ValueSaver#readme)
+[![documentationBadge](https://img.shields.io/badge/Documentation-Click%20here-blue?style=for-the-badge)](https://github.com/Luuk-Dev/ValueSaver#readme)
 # ValueSaver
 A way to easily save your values with a key.
 
