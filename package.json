@@ -1,6 +1,6 @@
 {
   "name": "valuesaver",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Save values in a storage and import them later back",
   "main": "index.js",
   "scripts": {
@@ -33,5 +33,9 @@
   "homepage": "https://github.com/Luuk-Dev/ValueSaver#readme",
   "repository": {
     "url": "https://github.com/Luuk-Dev/ValueSaver"
+  },
+  "typings": "index.d.ts",
+  "bugs": {
+    "url": "https://github.com/Luuk-Dev/ValueSaver/issues"
   }
 }
