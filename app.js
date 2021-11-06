@@ -2,6 +2,28 @@ const fs = require('fs');
 const path = require('path');
 var ids = require('./src/ids.json');
 const {ERRORS, WARNINGS, INFO} = require('./src/constants.json');
+const wait = require('./src/wait.js');
+const random = require('./src/random');
+
+if(!fs.existsSync(path.join(__dirname, `./src`))) throw new Error(`Please re-install ValueSaver. The source folder doesn't exists which is required in order to functionate.`);
+else if(!fs.existsSync(path.join(__dirname, `./src/saves`))){
+    fs.mkdir(path.join(__dirname, `./src/saves`), (err) => {
+        if(err) return console.warn(`\x1b[33m%s\x1b[0m`, err);
+    });
+} else {
+    (async () => {
+        for(var i = 0; i < ids.length; i++){
+            await wait(100);
+            fs.access(path.join(__dirname, ids[i].src), fs.constants.F_OK, (err) => {
+                if(err){
+                    fs.writeFile(path.join(__dirname, ids[i].src), (err_write) => {
+                        return console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_SAVE_NOT_FOUND.split('[SAVE_ID]').join(ids[i].id));
+                    });
+                }
+            });
+        }
+    })();
+}
 
 class ValueSaver {
     constructor(array){
@@ -14,6 +36,7 @@ class ValueSaver {
             this.size = 0;
         }
         this._id = null;
+        this.__ValueSaverInfo = INFO;
     }
     set(key, value){
         if(typeof key !== 'string' && typeof key !== 'number') throw new TypeError(`\x1b[31m${ERRORS.INVALID_KEY}`);
@@ -47,12 +70,33 @@ class ValueSaver {
     keyByValue(value){
         const key_validation = this._array.filter(r => r.value === value);
         if(key_validation.length > 0){
-            const arr = key_validation.reduce((array, save) => {
-                if(save['key'] && save['value']) array.push(save['key']);
-                return array;
-            }, []);
+            const arr = [];
+            for(var i = 0; i < key_validation.length; i++){
+                const save = key_validation[i];
+                arr.push(save);
+            }
             return arr;
         } else return null;
+    }
+    first(){
+        const _first = this._array[0];
+        if(!_first) return null;
+        else return _first.value;
+    }
+    firstKey(){
+        const _first = this._array[0];
+        if(!_first) return null;
+        else return _first.key;
+    }
+    last(){
+        if(this._array.length === 0) return null;
+        const _last = this._array[this._array.length - 1];
+        return _last.value;
+    }
+    lastKey(){
+        if(this._array.length === 0) return null;
+        const _last = this._array[this._array.length - 1];
+        return _last.key;
     }
     filter(filter){
         if(typeof filter !== 'function') throw new TypeError(`\x1b[31m${ERRORS.INVALID_FILTER}`);
@@ -63,33 +107,32 @@ class ValueSaver {
             const obj = {};
             obj[key] = value;
             return obj;
-        } else return undefined;
+        } else return null;
     }
     toArray(){
-        const arr = this._array.reduce((array, item) => {
-            if(item['key'] && item['value']){
-                const key = item.key;
-                const value = item.value;
-                const obj = {};
-                obj[key] = value;
-                array.push(obj);
-            }
-            return array;
-        }, []);
+        const arr = [];
+        for(var i = 0; i < this._array.length; i++){
+            const _item = this._array[i];
+            const obj = {};
+            obj[_item.key] = _item.value;
+            arr.push(obj);
+        }
         return arr;
     }
     forEach(callback){
         if(typeof callback !== 'function') throw new TypeError(`\x1b[31m${ERRORS.INVALID_CALLBACK}`);
-        this._array.forEach(v => {
-            callback.call(this, v.value);
-        });
+        for(var i = 0; i < this._array.length; i++){
+            const _item = this._array[i];
+            callback.call(this, _item.value);
+        }
         return this;
     }
     toReadableArray(){
-        const arr = this._array.reduce((array, item) => {
-            if(item['key'] && item['value']) array.push(item);
-            return array;
-        }, []);
+        const arr = [];
+        for(var i = 0; i < this._array.length; i++){
+            const item = this._array[i];
+            arr.push(item);
+        }
         return arr;
     }
     writeValueSaver(array){
@@ -102,9 +145,15 @@ class ValueSaver {
     insertValue(...objects){
         if(objects.forEach(ob => typeof ob !== 'object')) throw new TypeError(`\x1b[31m${ERRORS.INVALID_OBJECT_TYPE}`);
         if(objects.filter(o => o['key'] && o['value']).length < objects.length) throw new TypeError(`\x1b[31m${ERRORS.INVALID_OBJECT}`);
-        objects.forEach(object => {
-            this._array.push(object);
-        });
+        for(var i = 0; i < objects.length; i++){
+            const o = objects[i];
+            const _filter = this._array.filter(s => s.key === o.key);
+            if(_filter.length > 0){
+                _filter[0].value = o.value;
+            } else {
+                this._array.push(o);
+            }
+        }
         this.size = this._array.length;
         return this;
     }
@@ -118,46 +167,79 @@ class ValueSaver {
         this._id = id;
         return this;
     }
-    save(id){
+    save(id, concat){
         if(typeof id !== 'number' && typeof id !== 'string') throw new TypeError(`\x1b[31m${ERRORS.INVALID_ID}`);
+        if(String(id).toLowerCase().startsWith(INFO.ILLEGAL_SAVE_ID.toLowerCase())) throw new TypeError(`\x1b[31m${ERRORS.ILLEGAL_SAVE_ID.split('[ILLEGAL_SAVE_ID]').join(INFO.ILLEGAL_SAVE_ID)}`);
         const filter = ids.filter(r => r.id === id);
-        if(filter.length > 0){
-            const id_path = path.join(__dirname, filter[0].src);
-            const arr = JSON.parse(fs.readFileSync(id_path));
-            const newarr = this._array.reduce((array, save) => {
-                array.push(save);
-                return array;
-            }, arr);
-            fs.writeFile(path.join(__dirname, `./src/saves/${id}.json`), JSON.stringify(newarr), (err) => {
+        if(concat === true && filter.length > 0){
+            fs.access(path.join(__dirname, `./src/saves/${id}.json`), fs.constants.F_OK, (err) => {
                 if(err){
-                    console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_WRITE_SAVE.split("[SAVE_ID]").join(id));
-                    return this;
+                    fs.writeFile(path.join(__dirname, `./src/saves/${id}.json`), JSON.stringify(this._array), (err_write) => {
+                        console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_SAVE_NOT_FOUND.split('[SAVE_ID]').join(id));
+                        return this;
+                    });
+                } else {
+                    fs.readFile(path.join(__dirname, `./src/saves/${id}.json`), (err, _buffer) => {
+                        if(err){
+                            var _random = random(10000, 0);
+                            while(ids.filter(s => s.id === `${INFO.ILLEGAL_SAVE_ID}_${_random}`).length > 0){
+                                _random = random(10000, 0);
+                            }
+                            fs.writeFile(path.join(__dirname, `./src/saves/${INFO.ILLEGAL_SAVE_ID}_${_random}.json`), JSON.stringify(this._array), (err_write) => {
+                                if(err_write){
+                                    console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_CREATE_AUTOSAVE.split('[SAVE_ID]').join(id));
+                                    return this;
+                                } else {
+                                    console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_READ_FILE.split('[SAVE_ID]').join(id).split('[TEMP_SAVE_ID]').join(`${INFO.ILLEGAL_SAVE_ID}_${_random}`));
+                                    return this;
+                                }
+                            });
+                        } else {
+                            const buffer = JSON.parse(_buffer);
+                            this._array = this._array.concat(buffer);
+                            this.size = this._array.length;
+                            fs.writeFile(path.join(__dirname, `./src/saves/${id}.json`), JSON.stringify(this._array), (err_write) => {
+                                if(err_write){
+                                    console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_WRITE_SAVE.split("[SAVE_ID]").join(id));
+                                    return this;
+                                }
+                            });
+                        }
+                    });
                 }
             });
-            this._id = id;
-            return this;
         } else {
             fs.writeFile(path.join(__dirname, `./src/saves/${id}.json`), JSON.stringify(this._array), (err) => {
                 if(err){
                     console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_WRITE_SAVE.split("[SAVE_ID]").join(id));
                     return this;
                 }
-                ids.push({id: id, src: `./src/saves/${id}.json`});
-                fs.writeFile(path.join(__dirname, `./src/ids.json`), JSON.stringify(ids), (err_write) => {
-                    if(err_write){
-                        console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_UPDATE_IDS);
-                        return this;
-                    }
-                });
+                if(filter.length === 0){
+                    ids.push({id: id, src: `./src/saves/${id}.json`});
+                    fs.writeFile(path.join(__dirname, `./src/ids.json`), JSON.stringify(ids), (err_write) => {
+                        if(err_write){
+                            console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.ERROR_UPDATE_IDS);
+                            return this;
+                        }
+                    });
+                }
             });
-            this._id = id;
-            return this;
         }
+        this._id = id;
+        return this;
+    }
+    concat(valuesaver){
+        if(!valuesaver) throw new TypeError(`\x1b[31m${ERRORS.INVALID_VALUESAVER_TYPE}`);
+        if(!valuesaver.__ValueSaverInfo) throw new TypeError(`\x1b[31m${ERRORS.INVALID_VALUESAVER_TYPE}`);
+        if(valuesaver.__ValueSaverInfo.VERSION !== INFO.VERSION) console.warn(`\x1b[33m%s\x1b[0m`, WARNINGS.DIFFERENT_VALUESAVER_VERSION);
+        this._array = this._array.concat(valuesaver.toReadableArray());
+        this.size = this._array.length;
+        return this;
     }
     removeSave(){
         const id = this._id;
         const valuesaver = this;
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             if(!id) throw new TypeError(`\x1b[31m${ERRORS.INVALID_SAVE_ID}`);
             const filter = ids.filter(r => r.id === id);
             if(filter.length === 0) return false;
@@ -211,10 +293,11 @@ class ValueSaver {
         return this;
     }
     getAllSaves(){
-        const saves = ids.reduce((array, save) => {
-            array.push(save.id);
-            return array;
-        }, []);
+        const saves = [];
+        for(var i = 0; i < ids.length; i++){
+            const save = ids[i];
+            saves.push(save.id);
+        }
         return saves;
     }
 }
