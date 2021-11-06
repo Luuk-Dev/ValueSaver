@@ -169,14 +169,13 @@ else console.log(`The ValueSaver with the id 123 does not exist.`);
 ```
 
 ### Saving a ValueSaver with an id
-By saving a ValueSaver you will be able to use it again when your NodeJS server was offline for example. You can use the `import` function to use it again. The `save` function requires a custom id.
-> Note: If another ValueSaver with the same id already exists, it will push the two ValueSavers together to one ValueSaver.
+By saving a ValueSaver you will be able to use it again when your NodeJS server was offline for example. You can use the `import` function to use it again. The `save` function requires a custom id which is the first parameter. The second parameter is the `concat` parameter. If there is already another ValueSaver saved with this id will it by default overwrite the other ValueSaver. By setting the `concat` parameter to `true` it will concat the two ValueSavers to one ValueSaver.
 ```js
 const {ValueSaver} = require('valuesaver');
 const save = new ValueSaver();
 save.set(`Some key`, `Some value`);
 
-save.save(123);
+save.save(123, true);
 console.log(`Saved the ValueSaver with the custom id 123`);
 ```
 
