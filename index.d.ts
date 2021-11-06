@@ -132,10 +132,11 @@ export class ValueSaver{
     /**
      * Save the ValueSaver to a JSON file to import it later again.
      * @param id The custom id of the ValueSaver to save.
+     * @param concat (Optional: default false) If there already exists a save with the same id it should concat the ValueSavers together.
      * @example
-     * save.save(123);
+     * save.save(123, true);
      */
-    save(id: id) : ValueSaver;
+    save(id: id, concat: boolean) : ValueSaver;
 
     /**
      * Removes the save of the ValueSaver.
@@ -153,10 +154,36 @@ export class ValueSaver{
     removeAllSaves() : ValueSaver;
 
     /**
-     * Get all id's of the saved ValueSaver's
+     * Get all id's of the saved ValueSavers.
      * @returns {object}
      */
     getAllSaves() : [id];
+
+    /**
+     * Returns the first value of the ValueSaver.
+     */
+    first() : value;
+
+    /**
+     * Returns the first key of the ValueSaver.
+     */
+    firstKey() : key;
+
+    /**
+     * Returns the last value of the ValueSaver.
+     */
+    last() : value;
+
+    /**
+     * Returns the last key of the ValueSaver.
+     */
+    lastKey() : key;
+
+    /**
+     * Concat two different ValueSavers together to one ValueSaver
+     * @param ValueSaver The ValueSaver to concat together
+     */
+    concat(ValueSaver: ValueSaver) : ValueSaver;
 
     /**
      * The size of the ValueSaver
@@ -164,10 +191,20 @@ export class ValueSaver{
      * save.size;
      * // Returns 2
      */
-    size: number;
+    readonly size: number;
 
     /**
-     * The readable array for the ValueSaver
+     * The readable array for the ValueSaver.
      */
-    private _array;
+    private readonly _array;
+
+    /**
+     * The custom id of the ValueSaver when it got saved or imported.
+     */
+    private readonly _id;
+
+    /**
+     * The ValueSaver info.
+     */
+    private readonly __ValueSaverInfo;
 }
