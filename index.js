@@ -1,3 +1,3 @@
-const {ValueSaver} = require('./app.js');
+const ValueSaver = require('./app.js');
 
-module.exports = {ValueSaver};
+module.exports = ValueSaver;
