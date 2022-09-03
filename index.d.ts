@@ -17,6 +17,7 @@ export class ValueSaver{
      * Set a value by a key
      * @param key The key of the value you want to save
      * @param value The value you want to save
+     * @returns {ValueSaver}
      * @example
      * save.set("Some new key", "Some new value");
      */
@@ -25,6 +26,7 @@ export class ValueSaver{
     /**
      * Get a value by the key
      * @param key The key of the value you want to receive
+     * @returns {value | boolean}
      * @example
      * save.get("Some key");
      * // Returns "Some value"
@@ -45,17 +47,63 @@ export class ValueSaver{
      * save.keyByValue("Some new value");
      * // Returns ["Some new key"]
      */
-    keyByValue(value: value) : [string];
+    keyByValue(value: value) : [{key: key, value: value}];
 
     /**
-     * Filter the ValueSaver for specified keys or values
+     * Returns the first value of the ValueSaver.
+     * @returns {value | null}
+     * @example
+     * const save = new ValueSaver();
+     * save.first();
+     */
+    first() : value;
+
+    /**
+     * Returns the first key of the ValueSaver.
+     * @returns {key | null}
+     * @example
+     * const save = new ValueSaver();
+     * save.firstKey();
+     */
+    firstKey() : key;
+
+    /**
+     * Returns the last value of the ValueSaver.
+     * @returns {value | null}
+     * @example
+     * const save = new ValueSaver();
+     * save.last();
+     */
+    last() : value;
+
+    /**
+     * Returns the last key of the ValueSaver.
+     * @returns {key | null}
+     * @example
+     * const save = new ValueSaver();
+     * save.lastKey();
+     */
+    lastKey() : key;
+
+    /**
+     * Filter the ValueSaver for specific keys or values
      * @param listener The function to filter
-     * @returns {object}
+     * @returns {ValueSaver}
      * @example
      * save.filter(f => f.key === "Some new key");
-     * // Returns {"Some new key": "Some new value"}
+     * // Returns new ValueSaver
      */
-    filter(listener: (f : {key: key, value: value}) => void) : {};
+    filter(listener: (f : {key: key, value: value}) => void) : ValueSaver;
+
+    /**
+     * Filter the ValueSaver for specific keys or values
+     * @param listener The function to filter
+     * @returns {ValueSaver}
+     * @example
+     * save.filter(f => f.key === "Some new key");
+     * // Returns [{"Some new key": "Some new value"}]
+     */
+    filterArray(listener: (f: {key: key, value: value}) => void) : [{}];
 
     /**
      * Convert the ValueSaver to an array.
@@ -67,21 +115,13 @@ export class ValueSaver{
     toArray() : [{}];
 
     /**
-     * Clears the ValueSaver
+     * Convert the ValueSaver to a Map
+     * @returns {Map}
      * @example
-     * save.clear();
+     * save.toMap();
+     * // Returns Map(1) {'Some key' => 'Some value', 'Some new key' => 'Some new value'}
      */
-    clear() : ValueSaver;
-
-    /**
-     * Check whether a value exists in the ValueSaver or not.
-     * @param value The value you want to check whether it exists or not.
-     * @returns {boolean}
-     * @example
-     * save.hasValue("Some new value");
-     * // Returns true
-     */
-    hasValue(value: value) : boolean;
+    toMap() : Map;
 
     /**
      * Get all the values by the for each function
@@ -107,6 +147,7 @@ export class ValueSaver{
     /**
      * Overwrite the ValueSaver by a readable array.
      * @param array The array 
+     * @returns {ValueSaver}
      * @example
      * save.writeValueSaver({"key": "A totally new key", "value": "A totally new value"});
      */
@@ -115,6 +156,7 @@ export class ValueSaver{
     /**
      * Insert a new key and value by using an object.
      * @param object The object to insert
+     * @returns {ValueSaver}
      * @example
      * save.insertValue({"key": "Wow", "value": "Another wow"});
      */
@@ -123,11 +165,11 @@ export class ValueSaver{
     /**
      * Import a saved version of a ValueSaver.
      * @param id The custom id of the saved ValueSaver.
-     * @returns {boolean}
+     * @returns {ValueSaver | boolean}
      * @example
      * save.import(123);
      */
-    import(id: id) : ValueSaver;
+    import(id: id) : Promise<ValueSaver | boolean>;
 
     /**
      * Save the ValueSaver to a JSON file to import it later again.
@@ -136,11 +178,63 @@ export class ValueSaver{
      * @example
      * save.save(123, true);
      */
-    save(id: id, concat: boolean) : ValueSaver;
+    save(id: id, concat: boolean) : Promise<ValueSaver>;
+
+    /**
+     * Concat two different ValueSavers together to one ValueSaver
+     * @param ValueSaver The ValueSaver to concat together
+     * @returns {ValueSaver}
+     * @example
+     * const save1 = new ValueSaver();
+     * save1.set(`Some key`, `Some value`);
+     * const save2 = new ValueSaver();
+     * save2.set(`Some other key`, `Some other value`);
+     * const save3 = save1.concat(save2);
+     * // Returns new ValueSaver
+     */
+    concat(ValueSaver: ValueSaver) : ValueSaver;
+
+    /**
+     * Concat two different ValueSavers together to one ValueSaver
+     * @param ValueSaver The ValueSaver to concat together
+     * @returns {Array}
+     * @example
+     * const save1 = new ValueSaver();
+     * save1.set(`Some key`, `Some value`);
+     * const save2 = new ValueSaver();
+     * save2.set(`Some other key`, `Some other value`);
+     * const save3 = save1.concat(save2);
+     * // Returns array
+     */
+    concatArray(ValueSaver: ValueSaver) : [{}];
+
+    /**
+     * Reduce a ValueSaver
+     * @param listener The callback to set the initialValue
+     * @param initialValue The value to start with
+     * @returns {any}
+     * @example
+     * var newArray = save.reduce((array, item) => {
+     *    array.push(item.value);
+     *    return array;
+     * }, []);
+     */
+    reduce(listener: (previousValue: any, currentValue: {key: key, value: value}, index: number, array: [{key: key, value: value}]) => void, initialValue: value) : any;
+
+    /**
+     * Map the ValueSaver to an Array
+     * @param listener The callback to create a filter
+     * @returns {Array}
+     * @example
+     * const save = new ValueSaver();
+     * const array = save.map(i => i.value.startsWith('Some'));
+     * // Returns an Array
+     */
+    map(listener: (f : {key: key, value: value}) => void) : [];
 
     /**
      * Removes the save of the ValueSaver.
-     * @returns {boolean}
+     * @returns {Promise<ValueSaver>}
      * @example
      * save.removesave();
      */
@@ -148,42 +242,68 @@ export class ValueSaver{
 
     /**
      * Removes all the saves of the ValueSavers.
+     * @returns {ValueSaver}
      * @example
      * save.removeAllSaves();
      */
-    removeAllSaves() : ValueSaver;
+    removeAllSaves() : Promise<ValueSaver>;
+
+    /**
+     * Check whether a value exists in the ValueSaver or not.
+     * @param value The value you want to check whether it exists or not.
+     * @returns {boolean}
+     * @example
+     * save.hasValue("Some new value");
+     * // Returns true
+     */
+    hasValue(value: value) : boolean;
+
+    /**
+     * Create a ValueSaver from an Array
+     * @param array The array where you want to create a ValueSaver from
+     * @returns {ValueSaver}
+     * const arr = [{'Some key': 'Some value'}];
+     * const save = new ValueSaver();
+     * save.fromArray(arr);
+     * // Returns a new ValueSaver
+     */
+    fromArray(array: []) : ValueSaver;
+
+    /**
+     * Create a ValueSaver from a Map
+     * @param map The Map where you want to create a ValueSaver from
+     * @returns {ValueSaver}
+     * const map = new Map();
+     * map.set('test', 'test');
+     * const save = new ValueSaver();
+     * save.fromMap(map);
+     * // Returns a new ValueSaver
+     */
+    fromMap(map: Map) : ValueSaver;
+
+    /**
+     * Clears the ValueSaver
+     * @returns {ValueSaver}
+     * @example
+     * save.clear();
+     */
+    clear() : ValueSaver;
 
     /**
      * Get all id's of the saved ValueSavers.
-     * @returns {object}
+     * @returns {Array}
      */
     getAllSaves() : [id];
 
     /**
-     * Returns the first value of the ValueSaver.
+     * The ValueSaver class so you can import it as a module or as class
+     * @returns {ValueSaver}
+     * @example
+     * const ValueSaver = require("valuesaver");
+     * const { ValueSaver } = require("valuesaver");
+     * // Works both
      */
-    first() : value;
-
-    /**
-     * Returns the first key of the ValueSaver.
-     */
-    firstKey() : key;
-
-    /**
-     * Returns the last value of the ValueSaver.
-     */
-    last() : value;
-
-    /**
-     * Returns the last key of the ValueSaver.
-     */
-    lastKey() : key;
-
-    /**
-     * Concat two different ValueSavers together to one ValueSaver
-     * @param ValueSaver The ValueSaver to concat together
-     */
-    concat(ValueSaver: ValueSaver) : ValueSaver;
+    ValueSaver: ValueSaver;
 
     /**
      * The size of the ValueSaver
@@ -207,4 +327,8 @@ export class ValueSaver{
      * The ValueSaver info.
      */
     private readonly __ValueSaverInfo;
+}
+
+declare module 'ValueSaver'{
+    export = ValueSaver;
 }
