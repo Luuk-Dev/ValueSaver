@@ -194,7 +194,7 @@ class ValueSaver {
         return new Promise(async (resolve) => {
             if(typeof id !== 'number' && typeof id !== 'string') throw new TypeError(`\x1b[31m${ERRORS.INVALID_ID}`);
             const filter = ids.filter(r => r.id === String(id));
-            if(filter.length === 0) return false;
+            if(filter.length === 0) return resolve(false);
             var file;
             try{
                 var content = await fs.readFile(path.join(__dirname, filter[0].src));
