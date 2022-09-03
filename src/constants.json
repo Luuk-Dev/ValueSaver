@@ -2,6 +2,7 @@
     "ERRORS": {
         "INVALID_ARRAY": "[INVALID_ARRAY]: The specified array is an invalid array. The array must include a json object with a key and a value.",
         "INVALID_ARRAY_TYPE": "[INVALID_ARRAY_TYPE]: The specified parameter is not an array.",
+        "INVALID_MAP_TYPE": "[INVALID_MAP_TYPE]: The specified parameter is not a map.",
         "INVALID_KEY": "[INVALID_KEY]: No valid key has been specified! A key must be a string or a number.",
         "INVALID_FILTER": "[INVALID_FILTER]: No valid filter has been specified! A filter must be a function.",
         "INVALID_CALLBACK": "[INVALID_CALLBACK]: No valid callback has been specified! A callback must be a function.",
@@ -23,20 +24,8 @@
         "DIFFERENT_VALUESAVER_VERSION": "[DIFFERENT_VALUESAVER_VERSION]: The specified ValueSaver uses a different version than the ValueSaver where you want to concat it in. There is a possibility that the concat function will fail."
     },
     "INFO": {
-        "AUTHOR": "Luuk",
-        "URL": "https://github.com/Luuk-Dev",
-        "PUBLISHER": "Luuk",
-        "ORGANISATION": "Luuk",
-        "VERSIONS": {
-            "1.7.0": "Better security with less errors, new functions and does not overwrite a save automatically anymore",
-            "1.6.1": "Remove function is now a Promise which makes it easier to remove",
-            "1.6.0": "Bugs fixed and colored warnings and errors",
-            "1.5.0": "The official release of ValueSaver"
-        },
-        "LATEST_VERSION": "1.7.0",
-        "LICENSE": "MIT",
         "NON_FUNCTIONATING_SAVE": "non-functionating-save.json",
         "ILLEGAL_SAVE_ID": "ValueSaver_Auto_Save",
-        "VERSION": "1.7.0"
+        "VERSION": "1.9.0"
     }
 }
