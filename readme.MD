@@ -86,7 +86,7 @@ const save = new ValueSaver();
 save.set(`Some key`, `Some value`);
 
 console.log(save.keyByValue(`Some value`));
-// Output: ["Some key"]
+// Output: [{key: "Some key", value: "Some value"}]
 ```
 
 ### Filter
@@ -97,7 +97,18 @@ const save = new ValueSaver();
 save.set(`Some key`, `Some value`);
 
 console.log(save.filter(s => s.key === "Some key" && s.value === "Some value"));
-// Output: {"Some key": "Some value"}
+// Output new ValueSaver with the keys and values
+```
+
+### Filter array
+You can use a filter array to filter through the values. The filter required a function to filter. You can filter by key and by value.
+```js
+const {ValueSaver} = require('valuesaver');
+const save = new ValueSaver();
+save.set(`Some key`, `Some value`);
+
+console.log(save.filterArray(s => s.key === "Some key" && s.value === "Some value"));
+// [{key: "Some key", value: "Some value"}]
 ```
 
 ### Foreach function
@@ -111,6 +122,58 @@ save.forEach(value => console.log(value));
 // Output: Some value
 ```
 
+### Reduce function
+You can use the reduce function which will call the callback for every value. The first parameter will be seen as the callback and must be a function. The second parameter is the start value.
+```js
+const {ValueSaver} = require('valuesaver');
+const save = new ValueSaver();
+save.set(`Some key`, `Some value`);
+
+var value = save.reduce((str, item) => {
+    str += item;
+    return str;
+}, ``);
+// Output: Some value
+```
+
+### Map function
+You can use the map function which will call the callback for every value. The first parameter will be seen as the callback and must be a function.
+```js
+const {ValueSaver} = require('valuesaver');
+const save = new ValueSaver();
+save.set(`Some key`, {someBoolean: true});
+save.set(`Some other key`, {someBoolean: false});
+
+var booleans = save.map(item => item.someBoolean);
+// Output: [true, false]
+```
+
+## Concat function
+You can concat two ValueSaver's together to one ValueSaver. The function requires one parameter which is the other ValueSaver to concat.
+```js
+const {ValueSaver} = require('valuesaver');
+const save1 = new ValueSaver();
+const save2 = new ValueSaver();
+save1.set(`Some key`, `Some value`);
+save2.set(`Some other key`, `Some other value`);
+
+var newValueSaver = save1.concat(save2);
+// Output: new ValueSaver with both ValueSaver's keys and values
+```
+
+## Concat array function
+You can concat two ValueSaver's together to one array. The function requires one parameter which is the other ValueSaver to concat.
+```js
+const {ValueSaver} = require('valuesaver');
+const save1 = new ValueSaver();
+const save2 = new ValueSaver();
+save1.set(`Some key`, `Some value`);
+save2.set(`Some other key`, `Some other value`);
+
+var newValueSaver = save1.concatArray(save2);
+// Output: [{"Some key": "Some value"}, {"Some other key": "Some other value"}]
+```
+
 ### ValueSaver to array
 You can easily convert a ValueSaver to an array by using the `toArray` function.
 ```js
@@ -120,6 +183,17 @@ save.set(`Some key`, `Some value`);
 
 console.log(save.toArray());
 // Output: [{"Some key": "Some value"}]
+```
+
+### ValueSaver to Map
+You can easily convert a ValueSaver to a Map by using the `toMap` function.
+```js
+const {ValueSaver} = require('valuesaver');
+const save = new ValueSaver();
+save.set(`Some key`, `Some value`);
+
+console.log(save.toMap());
+// Output: Map(1) {'Some key' => 'Some value'}
 ```
 
 ### Readable array ValueSaver
@@ -145,6 +219,31 @@ console.log(save.toArray());
 // Output: [{"New key": "New value"}]
 ```
 
+### Create new ValueSaver from an array
+You can create a new ValueSaver with an array by using the `fromArray` function. The function requires one parameter which is the array.
+```js
+const {ValueSaver} = require('valuesaver');
+const save = new ValueSaver();
+const array = [{'Some key': 'Some value'}];
+const newValueSaver = save.fromArray(array);
+
+console.log(newValueSaver.toArray());
+// Output: [{"Some key": "Some value"}]
+```
+
+### Create new ValueSaver from a Map
+You can create a new ValueSaver with a map by using the `fromMap` function. The function requires one parameter which is the map.
+```js
+const {ValueSaver} = require('valuesaver');
+const save = new ValueSaver();
+const map = new Map();
+map.set('Some key', 'Some value');
+const newValueSaver = save.fromMap(map);
+
+console.log(newValueSaver.toArray());
+// Output: [{"Some key": "Some value"}]
+```
+
 ### Insert key's and value's with an object
 To insert a new key with a new value you can use the `insertValue` function. The first parameter must be an object with a key and a value.
 ```js
@@ -164,8 +263,11 @@ const {ValueSaver} = require('valuesaver');
 const save = new ValueSaver();
 save.set(`Some key`, `Some value`);
 
-if(save.import(123)) console.log(`Imported the ValueSaver with the id 123`);
-else console.log(`The ValueSaver with the id 123 does not exist.`);
+(async () => {
+    var import = await save.import(123);
+    if(import) console.log(`Imported the ValueSaver with the id 123`);
+    else console.log(`The ValueSaver with the id 123 does not exist.`);
+})();
 ```
 
 ### Saving a ValueSaver with an id
@@ -175,8 +277,10 @@ const {ValueSaver} = require('valuesaver');
 const save = new ValueSaver();
 save.set(`Some key`, `Some value`);
 
-save.save(123, true);
-console.log(`Saved the ValueSaver with the custom id 123`);
+(async () => {
+    await save.save(123, true);
+    console.log(`Saved the ValueSaver with the custom id 123`);
+})();
 ```
 
 ### Getting all saved saves
@@ -211,5 +315,7 @@ const {ValueSaver} = require('valuesaver');
 const save = new ValueSaver();
 save.set(`Some key`, `Some value`);
 
-save.removeAllSaves();
+(async () => {
+    await save.removeAllSaves();
+})();
 ```
